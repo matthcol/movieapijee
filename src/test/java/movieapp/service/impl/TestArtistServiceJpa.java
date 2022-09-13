@@ -24,9 +24,11 @@ import movieapp.dto.ArtistSimple;
 import movieapp.persistence.entity.Artist;
 import movieapp.persistence.repository.ArtistRepository;
 import movieapp.service.IArtistService;
+import org.springframework.test.context.ActiveProfiles;
 
 //@ExtendWith(MockitoExtension.class)
 @SpringBootTest
+@ActiveProfiles("test")
 class TestArtistServiceJpa {
 
 	// layer to mock
