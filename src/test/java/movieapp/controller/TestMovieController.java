@@ -26,7 +26,9 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import movieapp.dto.MovieSimple;
+import movieapp.dto.ArtistSimple;
 import movieapp.dto.MovieDetail;
+import movieapp.dto.MovieDetailDirectorActors;
 import movieapp.service.IMovieService;
 
 @WebMvcTest(MovieController.class) // controller to test with MockMvc client
@@ -65,11 +67,12 @@ class TestMovieController {
 		int id = 1;
 		String title = "Nobody";
 		Integer year = 2021;
-		var movieDetailDto = MovieDetail.builder()
-				.id(id)
-				.title(title)
-				.year(year)
-				.build();
+		var movieDetailDto = new MovieDetailDirectorActors(
+				id, title, year, null, null, null, 
+				ArtistSimple.of("Ilya Naishuller"), 
+				List.of(
+						ArtistSimple.of("Bob Odenkirk"),
+						ArtistSimple.of("Christopher Lloyd")));
 		given(movieService.getById(id))
 			.willReturn(Optional.of(movieDetailDto));
 		// 2. when/then
@@ -82,7 +85,9 @@ class TestMovieController {
 			.andExpect(jsonPath("$.id").exists())
 			.andExpect(jsonPath("$.id").value(id))
 			.andExpect(jsonPath("$.title").value(title))
-			.andExpect(jsonPath("$.year").value(year)); 
+			.andExpect(jsonPath("$.year").value(year))
+			.andExpect(jsonPath("$.director").exists())
+			.andExpect(jsonPath("$.actors").exists());
 		// check mock service has been called
 		then(movieService)
 			.should()
